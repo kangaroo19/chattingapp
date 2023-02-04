@@ -1,7 +1,8 @@
 import { useEffect,useState } from "react";
-import { authService as auth } from "../firebase";
+import { authService as auth, dbService } from "../firebase";
 import {  onAuthStateChanged, updateProfile,signInAnonymously } from "firebase/auth";
 import Router from "./Router";
+import { doc, updateDoc } from "firebase/firestore";
 
 
 function App() {
@@ -26,9 +27,24 @@ function App() {
       setInit(true)
     })
   },[])
+  const refreshUser=async()=>{ //프로필 업데이트시 페이지 업데이트
+    const user=auth.currentUser
+    setUserObj({
+      displayName:user.displayName,
+      uid:user.uid,
+      // updateProfile:(args)=>updateProfile(user,{displayName:user.displayName})
+    })
+    const {uid,displayName,photoURL}=user
+    await updateDoc(doc(dbService,"users",`${uid}`),{ //db업데이트
+      uid:`${uid}`,
+      userName:`${displayName}`,
+      userImg:`${photoURL}`
+  })
+  } 
   return (
     <>
       {init ? <Router
+                 refreshUser={refreshUser}
                  isLoggedIn={isLoggedIn}
                  userObj={userObj}/> 
                  :"init"}

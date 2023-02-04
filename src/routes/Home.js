@@ -6,26 +6,31 @@ import { dbService } from "../firebase"
 import { ref, set } from "firebase/database";
 import { doc,addDoc, collection, setDoc,query,onSnapshot,orderBy, QuerySnapshot } from "firebase/firestore";
 import { useEffect,useState } from "react";
+import { Link } from "react-router-dom";
 
 function Home({userObj}){
-    const [nweets,setNweets]=useState([])
+    const [users,setUsers]=useState([])
     useEffect(()=>{
         const q=query(collection(dbService,"users"))
-    const un=onSnapshot(q,(querySnapshot)=>{
+        const un=onSnapshot(q,(querySnapshot)=>{
         const array=[]
         querySnapshot.forEach((doc)=>{
-            array.push(doc.data().userName)
+            array.push(doc.data())
         })
-        console.log(array)
-        setNweets(array)
+        setUsers(array)
     })
     },[])
-    console.log(nweets)
+    const onClick=(event)=>{
+        console.log(event.target.name)
+    }
     return (
         <>
             <span>유저목록</span>
-            {nweets.map((nweets)=>(
-                <div>{nweets}</div>
+            {users.map((v)=>(
+                <div key={v.uid}>
+                    {v.userName}
+                    {v.uid===userObj.uid?null:<Link to={{pathname:'/room',user:v}}><button>대화</button></Link>}
+                </div>
             ))}
         </>
 

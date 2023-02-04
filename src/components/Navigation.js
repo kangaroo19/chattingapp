@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom"
-function Navigation(){
+function Navigation({userObj}){
     return (
         <nav>
             <ul>
@@ -7,10 +7,10 @@ function Navigation(){
                     <Link to="/">유저목록</Link>
                 </li>
                 <li>
-                    <Link to="/room">채팅방</Link>
+                    <Link to="/roomlist">채팅방</Link>
                 </li>
                 <li>
-                    <Link to="profile">내 프로필</Link>
+                    <Link to="/profile">{userObj.displayName} 의 프로필</Link>
                 </li>
             </ul>
         </nav>
